@@ -50,6 +50,17 @@ export function findFlolinrDir(start = process.cwd(), explicit?: string): string
   throw new CliError('No .flolinr workspace found. Run `flolinr init` first.')
 }
 
+export function findOrCreateFlolinrDir(
+  start = process.cwd(),
+  explicit?: string,
+): string {
+  try {
+    return findFlolinrDir(start, explicit)
+  } catch {
+    return initWorkspace(explicit ? resolve(explicit) : start)
+  }
+}
+
 export function emptyWorkspace(): Workspace {
   return { activeRollId: '', rolls: [] }
 }
@@ -190,6 +201,17 @@ export function saveRemoteConfig(
     `${JSON.stringify(config, null, 2)}\n`,
     'utf8',
   )
+}
+
+export function tryResolveRoll(
+  workspace: Workspace,
+  nameOrId: string,
+): Roll | null {
+  try {
+    return resolveRoll(workspace, nameOrId)
+  } catch {
+    return null
+  }
 }
 
 export function resolveRoll(workspace: Workspace, nameOrId: string): Roll {

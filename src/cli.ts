@@ -12,42 +12,8 @@ import {
 } from './commands/rolls.js'
 import { cmdInit, cmdStatus } from './commands/workspace.js'
 import { CliError } from './errors.js'
-
-const USAGE = `flolinr — local-first outliner CLI (.flolinr + GitHub vault)
-
-Usage:
-  flolinr [--dir <path>] <command> [args]
-
-Workspace
-  init [--git] [--remote owner/repo]   Create .flolinr/
-  status                               Show workspace + remote
-
-Rolls
-  rolls                                List rolls
-  roll new <name>
-  roll rename <name|id> <new>
-  roll archive <name|id>
-  show <roll> [--ids]
-  add <roll> <text> [--parent <id>]
-
-Query
-  search <query>
-  tags [name]
-  logs [YYYY-MM-DD]
-
-Import / export
-  import <file.csv|file.md>
-  export <roll> [--format csv|md] [--out file]
-
-GitHub
-  remote set <owner/repo> [--path .flolinr] [--branch]
-  remote show
-  push
-  pull
-
-Token lookup: FLOLINR_GITHUB_TOKEN, GH_TOKEN, \`gh auth token\`,
-then ~/.config/flolinr/config.json
-`
+import { USAGE } from './help.js'
+import { isReservedCommand, runTui } from './tui/app.js'
 
 async function main(argv: string[]): Promise<void> {
   const { flags, positionals } = parseArgs(argv)
@@ -63,7 +29,15 @@ async function main(argv: string[]): Promise<void> {
   const dir = flagString(flags, 'dir')
   const [cmd, ...rest] = positionals
   if (!cmd) {
-    process.stdout.write(USAGE)
+    await runTui({ dir })
+    return
+  }
+  if (cmd === 'edit') {
+    await runTui({ dir, roll: rest[0] })
+    return
+  }
+  if (!isReservedCommand(cmd)) {
+    await runTui({ dir, roll: cmd })
     return
   }
 

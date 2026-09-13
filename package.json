@@ -14,6 +14,7 @@
   "scripts": {
     "build": "tsc",
     "flolinr": "tsx src/cli.ts",
+    "install:bin": "node scripts/install-bin.mjs",
     "test": "tsx --test test/*.test.ts"
   },
   "engines": {

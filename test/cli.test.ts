@@ -68,6 +68,25 @@ test('import markdown creates a roll', () => {
   assert.match(show, /Notes|alpha|bravo/)
 })
 
+test('flolinr help prints usage', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'flolinr-cli-'))
+  const out = run(['help'], dir)
+  assert.match(out, /使い方|起動|Enter/)
+  assert.match(out, /flolinr help/)
+  assert.match(run(['--help'], dir), /Ctrl\+X/)
+})
+
+test('flolinr without a TTY does not hang', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'flolinr-cli-'))
+  try {
+    run([], dir)
+    assert.fail('expected TTY error')
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err)
+    assert.match(message, /terminal|TTY/i)
+  }
+})
+
 test('remote set writes remote.json; init --git creates a repo', () => {
   const dir = mkdtempSync(join(tmpdir(), 'flolinr-cli-'))
   run(['init', '--git', '--remote', 'yozniax/flolinr-vault', '--dir', dir], dir)
