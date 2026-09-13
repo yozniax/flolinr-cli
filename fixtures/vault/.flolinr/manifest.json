@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "rolls": [
+    {
+      "id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+      "name": "Inbox",
+      "file": "rolls/Inbox.csv",
+      "updatedAt": "2026-01-02T00:00:00.000Z",
+      "archived": false
+    }
+  ]
+}
